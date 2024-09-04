@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronRightIcon, SaladIcon, XCircleIcon, CheckCircleIcon } from 'lucide-react';
+import { ChevronRightIcon, SaladIcon, XCircleIcon, CheckCircleIcon, ActivityIcon, TargetIcon, ScaleIcon } from 'lucide-react';
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -38,32 +38,81 @@ const Index = () => {
     const heightInMeters = formData.height / 100;
     const bmi = formData.weight / (heightInMeters * heightInMeters);
 
-    let recommendation = `Based on your information (Age: ${formData.age}, Weight: ${formData.weight}kg, Height: ${formData.height}cm, BMI: ${bmi.toFixed(1)}), here's your personalized plan:\n\n`;
+    let recommendation = [
+      {
+        title: "Your Profile",
+        content: `Age: ${formData.age} years\nWeight: ${formData.weight} kg\nHeight: ${formData.height} cm\nBMI: ${bmi.toFixed(1)}`,
+        icon: <ScaleIcon className="h-6 w-6 text-blue-500" />
+      }
+    ];
 
     if (formData.goal === "weight-loss") {
-      recommendation += "For weight loss:\n";
-      recommendation += "- Aim for a calorie deficit of 500 calories per day\n";
-      recommendation += "- Focus on high-protein, low-calorie foods\n";
-      recommendation += "- Incorporate 30-45 minutes of cardio 5 times a week\n";
+      recommendation.push(
+        {
+          title: "Calorie Goal",
+          content: "Aim for a calorie deficit of 500 calories per day",
+          icon: <TargetIcon className="h-6 w-6 text-green-500" />
+        },
+        {
+          title: "Nutrition Focus",
+          content: "High-protein, low-calorie foods",
+          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
+        },
+        {
+          title: "Exercise Plan",
+          content: "30-45 minutes of cardio 5 times a week",
+          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
+        }
+      );
       setFoodSuggestions(["Lean meats", "Fish", "Vegetables", "Whole grains", "Fruits"]);
       setFoodsToAvoid(["Sugary drinks", "Processed foods", "High-fat snacks"]);
     } else if (formData.goal === "muscle-gain") {
-      recommendation += "For muscle gain:\n";
-      recommendation += "- Increase your calorie intake by 300-500 calories per day\n";
-      recommendation += "- Focus on high-protein foods and complex carbohydrates\n";
-      recommendation += "- Incorporate strength training 3-4 times a week\n";
+      recommendation.push(
+        {
+          title: "Calorie Goal",
+          content: "Increase your calorie intake by 300-500 calories per day",
+          icon: <TargetIcon className="h-6 w-6 text-green-500" />
+        },
+        {
+          title: "Nutrition Focus",
+          content: "High-protein foods and complex carbohydrates",
+          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
+        },
+        {
+          title: "Exercise Plan",
+          content: "Strength training 3-4 times a week",
+          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
+        }
+      );
       setFoodSuggestions(["Chicken breast", "Eggs", "Greek yogurt", "Quinoa", "Sweet potatoes"]);
       setFoodsToAvoid(["Excessive sugar", "Alcohol", "Fried foods"]);
     } else {
-      recommendation += "For general fitness:\n";
-      recommendation += "- Maintain a balanced diet with a mix of nutrients\n";
-      recommendation += "- Aim for 150 minutes of moderate exercise per week\n";
-      recommendation += "- Include both cardio and strength training in your routine\n";
+      recommendation.push(
+        {
+          title: "Nutrition Goal",
+          content: "Maintain a balanced diet with a mix of nutrients",
+          icon: <TargetIcon className="h-6 w-6 text-green-500" />
+        },
+        {
+          title: "Exercise Plan",
+          content: "150 minutes of moderate exercise per week",
+          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
+        },
+        {
+          title: "Fitness Focus",
+          content: "Include both cardio and strength training in your routine",
+          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
+        }
+      );
       setFoodSuggestions(["Mixed vegetables", "Lean proteins", "Whole grains", "Nuts", "Seeds"]);
       setFoodsToAvoid(["Excessive processed foods", "High-sugar snacks"]);
     }
 
-    recommendation += `\nBased on your activity level (${formData.activityLevel}), adjust your calorie intake and exercise intensity accordingly.`;
+    recommendation.push({
+      title: "Activity Level Adjustment",
+      content: `Based on your ${formData.activityLevel} activity level, adjust your calorie intake and exercise intensity accordingly.`,
+      icon: <ActivityIcon className="h-6 w-6 text-blue-500" />
+    });
 
     setRecommendation(recommendation);
     setEatingBenefits([
@@ -154,16 +203,26 @@ const Index = () => {
                 </TabsList>
                 <div className="mt-4">
                   <TabsContent value="recommendations">
-                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
-                      <p className="whitespace-pre-line text-sm sm:text-base">{recommendation}</p>
+                    <ScrollArea className="h-[350px] w-full rounded-md border p-4">
+                      <div className="space-y-4">
+                        {recommendation.map((rec, index) => (
+                          <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                            <div className="flex items-center mb-2">
+                              {rec.icon}
+                              <h3 className="text-lg font-semibold ml-2">{rec.title}</h3>
+                            </div>
+                            <p className="text-gray-600 whitespace-pre-line">{rec.content}</p>
+                          </div>
+                        ))}
+                      </div>
                     </ScrollArea>
                   </TabsContent>
                   <TabsContent value="food-suggestions">
-                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                    <ScrollArea className="h-[350px] w-full rounded-md border p-4">
                       <ul className="space-y-2">
                         {foodSuggestions.map((food, index) => (
-                          <li key={index} className="flex items-center text-sm sm:text-base">
-                            <SaladIcon className="mr-2 h-4 w-4 text-green-500" />
+                          <li key={index} className="flex items-center text-sm sm:text-base bg-green-100 p-2 rounded-md">
+                            <SaladIcon className="mr-2 h-5 w-5 text-green-500" />
                             <span>{food}</span>
                           </li>
                         ))}
@@ -171,11 +230,11 @@ const Index = () => {
                     </ScrollArea>
                   </TabsContent>
                   <TabsContent value="foods-to-avoid">
-                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                    <ScrollArea className="h-[350px] w-full rounded-md border p-4">
                       <ul className="space-y-2">
                         {foodsToAvoid.map((food, index) => (
-                          <li key={index} className="flex items-center text-sm sm:text-base">
-                            <XCircleIcon className="mr-2 h-4 w-4 text-red-500" />
+                          <li key={index} className="flex items-center text-sm sm:text-base bg-red-100 p-2 rounded-md">
+                            <XCircleIcon className="mr-2 h-5 w-5 text-red-500" />
                             <span>{food}</span>
                           </li>
                         ))}
@@ -183,25 +242,25 @@ const Index = () => {
                     </ScrollArea>
                   </TabsContent>
                   <TabsContent value="benefits">
-                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                    <ScrollArea className="h-[350px] w-full rounded-md border p-4">
                       <div className="space-y-4">
                         <div>
-                          <h3 className="font-semibold text-base mb-2">Benefits of Eating Recommended Foods:</h3>
+                          <h3 className="font-semibold text-lg mb-2 text-green-600">Benefits of Eating Recommended Foods:</h3>
                           <ul className="space-y-2">
                             {eatingBenefits.map((benefit, index) => (
-                              <li key={index} className="flex items-center text-sm">
-                                <CheckCircleIcon className="mr-2 h-4 w-4 text-green-500" />
+                              <li key={index} className="flex items-center text-sm bg-green-50 p-2 rounded-md">
+                                <CheckCircleIcon className="mr-2 h-5 w-5 text-green-500" />
                                 <span>{benefit}</span>
                               </li>
                             ))}
                           </ul>
                         </div>
                         <div>
-                          <h3 className="font-semibold text-base mb-2">Benefits of Avoiding Certain Foods:</h3>
+                          <h3 className="font-semibold text-lg mb-2 text-blue-600">Benefits of Avoiding Certain Foods:</h3>
                           <ul className="space-y-2">
                             {avoidingBenefits.map((benefit, index) => (
-                              <li key={index} className="flex items-center text-sm">
-                                <CheckCircleIcon className="mr-2 h-4 w-4 text-blue-500" />
+                              <li key={index} className="flex items-center text-sm bg-blue-50 p-2 rounded-md">
+                                <CheckCircleIcon className="mr-2 h-5 w-5 text-blue-500" />
                                 <span>{benefit}</span>
                               </li>
                             ))}
