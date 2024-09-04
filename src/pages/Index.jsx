@@ -38,95 +38,142 @@ const Index = () => {
     const heightInMeters = formData.height / 100;
     const bmi = formData.weight / (heightInMeters * heightInMeters);
 
+    // Calculate base metabolic rate (BMR) using Harris-Benedict equation
+    const bmr = 10 * formData.weight + 6.25 * formData.height - 5 * formData.age + 5; // For men, subtract 161 for women
+
+    // Activity level multipliers
+    const activityMultipliers = {
+      'sedentary': 1.2,
+      'lightly-active': 1.375,
+      'moderately-active': 1.55,
+      'very-active': 1.725
+    };
+
+    const tdee = bmr * activityMultipliers[formData.activityLevel];
+
     let newRecommendation = [
       {
         title: "Your Profile",
-        content: `Age: ${formData.age} years\nWeight: ${formData.weight} kg\nHeight: ${formData.height} cm\nBMI: ${bmi.toFixed(1)}`,
+        content: `Age: ${formData.age} years\nWeight: ${formData.weight} kg\nHeight: ${formData.height} cm\nBMI: ${bmi.toFixed(1)}\nActivity Level: ${formData.activityLevel}`,
         icon: <ScaleIcon className="h-6 w-6 text-blue-500" />
       }
     ];
 
-    if (formData.goal === "weight-loss") {
-      newRecommendation.push(
-        {
-          title: "Calorie Goal",
-          content: "Aim for a calorie deficit of 500 calories per day",
-          icon: <TargetIcon className="h-6 w-6 text-green-500" />
-        },
-        {
-          title: "Nutrition Focus",
-          content: "High-protein, low-calorie foods",
-          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
-        },
-        {
-          title: "Exercise Plan",
-          content: "30-45 minutes of cardio 5 times a week",
-          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
-        }
-      );
-      setFoodSuggestions(["Lean meats", "Fish", "Vegetables", "Whole grains", "Fruits"]);
-      setFoodsToAvoid(["Sugary drinks", "Processed foods", "High-fat snacks"]);
-    } else if (formData.goal === "muscle-gain") {
-      newRecommendation.push(
-        {
-          title: "Calorie Goal",
-          content: "Increase your calorie intake by 300-500 calories per day",
-          icon: <TargetIcon className="h-6 w-6 text-green-500" />
-        },
-        {
-          title: "Nutrition Focus",
-          content: "High-protein foods and complex carbohydrates",
-          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
-        },
-        {
-          title: "Exercise Plan",
-          content: "Strength training 3-4 times a week",
-          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
-        }
-      );
-      setFoodSuggestions(["Chicken breast", "Eggs", "Greek yogurt", "Quinoa", "Sweet potatoes"]);
-      setFoodsToAvoid(["Excessive sugar", "Alcohol", "Fried foods"]);
-    } else {
-      newRecommendation.push(
-        {
-          title: "Nutrition Goal",
-          content: "Maintain a balanced diet with a mix of nutrients",
-          icon: <TargetIcon className="h-6 w-6 text-green-500" />
-        },
-        {
-          title: "Exercise Plan",
-          content: "150 minutes of moderate exercise per week",
-          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
-        },
-        {
-          title: "Fitness Focus",
-          content: "Include both cardio and strength training in your routine",
-          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
-        }
-      );
-      setFoodSuggestions(["Mixed vegetables", "Lean proteins", "Whole grains", "Nuts", "Seeds"]);
-      setFoodsToAvoid(["Excessive processed foods", "High-sugar snacks"]);
-    }
+    let calorieGoal, nutritionFocus, exercisePlan;
 
-    newRecommendation.push({
-      title: "Activity Level Adjustment",
-      content: `Based on your ${formData.activityLevel} activity level, adjust your calorie intake and exercise intensity accordingly.`,
-      icon: <ActivityIcon className="h-6 w-6 text-blue-500" />
-    });
+    if (formData.goal === "weight-loss") {
+      calorieGoal = Math.round(tdee - 500);
+      nutritionFocus = "High-protein, low-calorie foods";
+      exercisePlan = getExercisePlan(formData.activityLevel, "weight-loss");
+      newRecommendation.push(
+        {
+          title: "Calorie Goal",
+          content: `Aim for a daily calorie intake of ${calorieGoal} calories`,
+          icon: <TargetIcon className="h-6 w-6 text-green-500" />
+        },
+        {
+          title: "Nutrition Focus",
+          content: nutritionFocus,
+          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
+        },
+        {
+          title: "Exercise Plan",
+          content: exercisePlan,
+          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
+        }
+      );
+      setFoodSuggestions(["Lean meats", "Fish", "Vegetables", "Whole grains", "Fruits", "Low-fat dairy"]);
+      setFoodsToAvoid(["Sugary drinks", "Processed foods", "High-fat snacks", "Refined carbohydrates"]);
+    } else if (formData.goal === "muscle-gain") {
+      calorieGoal = Math.round(tdee + 300);
+      nutritionFocus = "High-protein foods and complex carbohydrates";
+      exercisePlan = getExercisePlan(formData.activityLevel, "muscle-gain");
+      newRecommendation.push(
+        {
+          title: "Calorie Goal",
+          content: `Aim for a daily calorie intake of ${calorieGoal} calories`,
+          icon: <TargetIcon className="h-6 w-6 text-green-500" />
+        },
+        {
+          title: "Nutrition Focus",
+          content: nutritionFocus,
+          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
+        },
+        {
+          title: "Exercise Plan",
+          content: exercisePlan,
+          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
+        }
+      );
+      setFoodSuggestions(["Chicken breast", "Eggs", "Greek yogurt", "Quinoa", "Sweet potatoes", "Lean beef", "Nuts and seeds"]);
+      setFoodsToAvoid(["Excessive sugar", "Alcohol", "Fried foods", "Processed snacks"]);
+    } else {
+      calorieGoal = Math.round(tdee);
+      nutritionFocus = "Balanced diet with a mix of nutrients";
+      exercisePlan = getExercisePlan(formData.activityLevel, "general-fitness");
+      newRecommendation.push(
+        {
+          title: "Calorie Goal",
+          content: `Maintain a daily calorie intake of ${calorieGoal} calories`,
+          icon: <TargetIcon className="h-6 w-6 text-green-500" />
+        },
+        {
+          title: "Nutrition Focus",
+          content: nutritionFocus,
+          icon: <SaladIcon className="h-6 w-6 text-orange-500" />
+        },
+        {
+          title: "Exercise Plan",
+          content: exercisePlan,
+          icon: <ActivityIcon className="h-6 w-6 text-purple-500" />
+        }
+      );
+      setFoodSuggestions(["Mixed vegetables", "Lean proteins", "Whole grains", "Fruits", "Low-fat dairy", "Nuts", "Seeds"]);
+      setFoodsToAvoid(["Excessive processed foods", "High-sugar snacks", "Sugary drinks"]);
+    }
 
     setRecommendation(newRecommendation);
     setEatingBenefits([
       "Improved energy levels",
       "Better nutrient absorption",
       "Enhanced muscle recovery",
-      "Supports your fitness goals"
+      "Supports your fitness goals",
+      "Improved overall health"
     ]);
     setAvoidingBenefits([
       "Reduced risk of weight gain",
-      "Improved overall health",
-      "Better blood sugar control",
-      "Enhanced fitness progress"
+      "Improved blood sugar control",
+      "Enhanced fitness progress",
+      "Better cardiovascular health",
+      "Reduced inflammation"
     ]);
+  };
+
+  const getExercisePlan = (activityLevel, goal) => {
+    const plans = {
+      'sedentary': {
+        'weight-loss': "Start with 30 minutes of moderate cardio 3 times a week, gradually increasing to 5 times a week. Add 2 days of strength training.",
+        'muscle-gain': "Begin with 3 days of full-body strength training. Add 2 days of light cardio for overall fitness.",
+        'general-fitness': "Aim for 150 minutes of moderate exercise per week. Mix cardio and strength training."
+      },
+      'lightly-active': {
+        'weight-loss': "45 minutes of cardio 4-5 times a week, with 2-3 days of strength training.",
+        'muscle-gain': "4 days of strength training, focusing on different muscle groups each day. Add 2 days of moderate cardio.",
+        'general-fitness': "30 minutes of exercise 5 days a week, alternating between cardio and strength training."
+      },
+      'moderately-active': {
+        'weight-loss': "60 minutes of high-intensity cardio 5 times a week, with 3 days of strength training.",
+        'muscle-gain': "5 days of intensive strength training, with 2 days of high-intensity interval training (HIIT).",
+        'general-fitness': "45 minutes of varied exercises 6 days a week, including cardio, strength, and flexibility work."
+      },
+      'very-active': {
+        'weight-loss': "75 minutes of vigorous cardio 5-6 times a week, with 3-4 days of strength training. Consider adding HIIT sessions.",
+        'muscle-gain': "6 days of intensive strength training, targeting specific muscle groups each day. Add 2-3 HIIT sessions for cardio.",
+        'general-fitness': "60+ minutes of varied high-intensity exercises 6 days a week, focusing on cardio, strength, and sports-specific training."
+      }
+    };
+
+    return plans[activityLevel][goal];
   };
 
   return (
@@ -173,10 +220,10 @@ const Index = () => {
                       <SelectValue placeholder="Select activity level" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="sedentary">Sedentary</SelectItem>
-                      <SelectItem value="lightly-active">Lightly Active</SelectItem>
-                      <SelectItem value="moderately-active">Moderately Active</SelectItem>
-                      <SelectItem value="very-active">Very Active</SelectItem>
+                      <SelectItem value="sedentary">Sedentary (little to no exercise)</SelectItem>
+                      <SelectItem value="lightly-active">Lightly Active (light exercise 1-3 days/week)</SelectItem>
+                      <SelectItem value="moderately-active">Moderately Active (moderate exercise 3-5 days/week)</SelectItem>
+                      <SelectItem value="very-active">Very Active (hard exercise 6-7 days/week)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
