@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronRightIcon, SaladIcon, XCircleIcon } from 'lucide-react';
+import { ChevronRightIcon, SaladIcon, XCircleIcon, CheckCircleIcon } from 'lucide-react';
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +18,8 @@ const Index = () => {
   const [recommendation, setRecommendation] = useState('');
   const [foodSuggestions, setFoodSuggestions] = useState([]);
   const [foodsToAvoid, setFoodsToAvoid] = useState([]);
+  const [eatingBenefits, setEatingBenefits] = useState([]);
+  const [avoidingBenefits, setAvoidingBenefits] = useState([]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +34,8 @@ const Index = () => {
     let recommendation = '';
     let suggestedFoods = [];
     let avoidFoods = [];
+    let eatBenefits = [];
+    let avoidBenefits = [];
 
     if (goal === 'weight-loss') {
       recommendation = `Based on your age (${age}), weight (${weight} kg), height (${height} cm), and ${activityLevel} activity level, here are some recommendations for weight loss:\n
@@ -42,6 +46,16 @@ const Index = () => {
       5. Stay hydrated and aim for 8 hours of sleep per night.`;
       suggestedFoods = ['Lean meats', 'Fish', 'Vegetables', 'Fruits', 'Whole grains', 'Greek yogurt'];
       avoidFoods = ['Sugary drinks', 'Processed snacks', 'Fast food', 'High-calorie desserts', 'Alcohol'];
+      eatBenefits = [
+        'High protein foods help maintain muscle mass during weight loss',
+        'Fiber-rich foods promote feelings of fullness and aid digestion',
+        'Nutrient-dense foods provide essential vitamins and minerals with fewer calories'
+      ];
+      avoidBenefits = [
+        'Reducing sugar intake helps stabilize blood sugar and reduce cravings',
+        'Limiting processed foods decreases overall calorie consumption',
+        'Avoiding alcohol eliminates empty calories and improves sleep quality'
+      ];
     } else if (goal === 'muscle-gain') {
       recommendation = `For your goal of muscle gain, considering your age (${age}), weight (${weight} kg), height (${height} cm), and ${activityLevel} activity level:\n
       1. Increase your calorie intake by 300-500 calories above maintenance.
@@ -51,6 +65,16 @@ const Index = () => {
       5. Ensure adequate rest and recovery between workouts.`;
       suggestedFoods = ['Chicken breast', 'Lean beef', 'Eggs', 'Salmon', 'Quinoa', 'Sweet potatoes', 'Nuts and seeds'];
       avoidFoods = ['Sugary snacks', 'Excessive alcohol', 'Low-protein foods', 'Highly processed foods'];
+      eatBenefits = [
+        'High-protein foods support muscle repair and growth',
+        'Complex carbohydrates provide energy for intense workouts',
+        'Healthy fats aid in hormone production necessary for muscle growth'
+      ];
+      avoidBenefits = [
+        'Limiting sugar helps maintain stable energy levels',
+        'Reducing alcohol intake improves protein synthesis and recovery',
+        'Avoiding processed foods ensures better nutrient intake for muscle building'
+      ];
     } else if (goal === 'general-fitness') {
       recommendation = `To improve your general fitness at age ${age}, weight ${weight} kg, height ${height} cm, and ${activityLevel} activity level:\n
       1. Aim for 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity per week.
@@ -60,11 +84,23 @@ const Index = () => {
       5. Stay consistent with your routine and gradually increase intensity over time.`;
       suggestedFoods = ['Colorful vegetables', 'Fruits', 'Lean proteins', 'Whole grains', 'Low-fat dairy', 'Healthy fats'];
       avoidFoods = ['Excessive processed foods', 'Sugary drinks', 'High-sodium foods', 'Trans fats'];
+      eatBenefits = [
+        'Varied nutrients support overall health and immune function',
+        'Balanced meals provide sustained energy throughout the day',
+        'Antioxidants in fruits and vegetables aid in recovery and reduce inflammation'
+      ];
+      avoidBenefits = [
+        'Reducing processed foods decreases intake of harmful additives',
+        'Limiting sugar helps maintain healthy blood sugar levels',
+        'Avoiding trans fats improves heart health and reduces inflammation'
+      ];
     }
 
     setRecommendation(recommendation);
     setFoodSuggestions(suggestedFoods);
     setFoodsToAvoid(avoidFoods);
+    setEatingBenefits(eatBenefits);
+    setAvoidingBenefits(avoidBenefits);
   };
 
   return (
@@ -133,10 +169,11 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="recommendations">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
                   <TabsTrigger value="food-suggestions">Food Suggestions</TabsTrigger>
                   <TabsTrigger value="foods-to-avoid">Foods to Avoid</TabsTrigger>
+                  <TabsTrigger value="benefits">Benefits</TabsTrigger>
                 </TabsList>
                 <TabsContent value="recommendations">
                   <ScrollArea className="h-[300px] w-full rounded-md border p-4">
@@ -165,6 +202,34 @@ const Index = () => {
                         </li>
                       ))}
                     </ul>
+                  </ScrollArea>
+                </TabsContent>
+                <TabsContent value="benefits">
+                  <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="font-semibold text-lg mb-2">Benefits of Eating Recommended Foods:</h3>
+                        <ul className="space-y-2">
+                          {eatingBenefits.map((benefit, index) => (
+                            <li key={index} className="flex items-center">
+                              <CheckCircleIcon className="mr-2 h-5 w-5 text-green-500" />
+                              <span>{benefit}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-2">Benefits of Avoiding Certain Foods:</h3>
+                        <ul className="space-y-2">
+                          {avoidingBenefits.map((benefit, index) => (
+                            <li key={index} className="flex items-center">
+                              <CheckCircleIcon className="mr-2 h-5 w-5 text-blue-500" />
+                              <span>{benefit}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </ScrollArea>
                 </TabsContent>
               </Tabs>
