@@ -30,17 +30,14 @@ const Index = () => {
   };
 
   const generateRecommendation = () => {
-    // Basic validation
     if (!formData.age || !formData.weight || !formData.height || !formData.goal || !formData.activityLevel) {
       alert("Please fill in all fields");
       return;
     }
 
-    // Calculate BMI
     const heightInMeters = formData.height / 100;
     const bmi = formData.weight / (heightInMeters * heightInMeters);
 
-    // Generate recommendation based on input
     let recommendation = `Based on your information (Age: ${formData.age}, Weight: ${formData.weight}kg, Height: ${formData.height}cm, BMI: ${bmi.toFixed(1)}), here's your personalized plan:\n\n`;
 
     if (formData.goal === "weight-loss") {
@@ -148,70 +145,72 @@ const Index = () => {
               <CardTitle className="text-xl sm:text-2xl text-center">Your Personalized Fitness Plan</CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="recommendations">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
-                  <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-                  <TabsTrigger value="food-suggestions">Food Suggestions</TabsTrigger>
-                  <TabsTrigger value="foods-to-avoid">Foods to Avoid</TabsTrigger>
-                  <TabsTrigger value="benefits">Benefits</TabsTrigger>
+              <Tabs defaultValue="recommendations" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-4">
+                  <TabsTrigger value="recommendations" className="px-2 py-1 text-xs sm:text-sm">Recommendations</TabsTrigger>
+                  <TabsTrigger value="food-suggestions" className="px-2 py-1 text-xs sm:text-sm">Food Suggestions</TabsTrigger>
+                  <TabsTrigger value="foods-to-avoid" className="px-2 py-1 text-xs sm:text-sm">Foods to Avoid</TabsTrigger>
+                  <TabsTrigger value="benefits" className="px-2 py-1 text-xs sm:text-sm">Benefits</TabsTrigger>
                 </TabsList>
-                <TabsContent value="recommendations">
-                  <ScrollArea className="h-[250px] sm:h-[300px] w-full rounded-md border p-4">
-                    <p className="whitespace-pre-line text-sm sm:text-base">{recommendation}</p>
-                  </ScrollArea>
-                </TabsContent>
-                <TabsContent value="food-suggestions">
-                  <ScrollArea className="h-[250px] sm:h-[300px] w-full rounded-md border p-4">
-                    <ul className="space-y-2">
-                      {foodSuggestions.map((food, index) => (
-                        <li key={index} className="flex items-center text-sm sm:text-base">
-                          <SaladIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
-                          <span>{food}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                </TabsContent>
-                <TabsContent value="foods-to-avoid">
-                  <ScrollArea className="h-[250px] sm:h-[300px] w-full rounded-md border p-4">
-                    <ul className="space-y-2">
-                      {foodsToAvoid.map((food, index) => (
-                        <li key={index} className="flex items-center text-sm sm:text-base">
-                          <XCircleIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
-                          <span>{food}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </ScrollArea>
-                </TabsContent>
-                <TabsContent value="benefits">
-                  <ScrollArea className="h-[250px] sm:h-[300px] w-full rounded-md border p-4">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="font-semibold text-base sm:text-lg mb-2">Benefits of Eating Recommended Foods:</h3>
-                        <ul className="space-y-2">
-                          {eatingBenefits.map((benefit, index) => (
-                            <li key={index} className="flex items-center text-sm sm:text-base">
-                              <CheckCircleIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
-                              <span>{benefit}</span>
-                            </li>
-                          ))}
-                        </ul>
+                <div className="mt-4">
+                  <TabsContent value="recommendations">
+                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                      <p className="whitespace-pre-line text-sm sm:text-base">{recommendation}</p>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value="food-suggestions">
+                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                      <ul className="space-y-2">
+                        {foodSuggestions.map((food, index) => (
+                          <li key={index} className="flex items-center text-sm sm:text-base">
+                            <SaladIcon className="mr-2 h-4 w-4 text-green-500" />
+                            <span>{food}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value="foods-to-avoid">
+                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                      <ul className="space-y-2">
+                        {foodsToAvoid.map((food, index) => (
+                          <li key={index} className="flex items-center text-sm sm:text-base">
+                            <XCircleIcon className="mr-2 h-4 w-4 text-red-500" />
+                            <span>{food}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </ScrollArea>
+                  </TabsContent>
+                  <TabsContent value="benefits">
+                    <ScrollArea className="h-[250px] w-full rounded-md border p-4">
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="font-semibold text-base mb-2">Benefits of Eating Recommended Foods:</h3>
+                          <ul className="space-y-2">
+                            {eatingBenefits.map((benefit, index) => (
+                              <li key={index} className="flex items-center text-sm">
+                                <CheckCircleIcon className="mr-2 h-4 w-4 text-green-500" />
+                                <span>{benefit}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-base mb-2">Benefits of Avoiding Certain Foods:</h3>
+                          <ul className="space-y-2">
+                            {avoidingBenefits.map((benefit, index) => (
+                              <li key={index} className="flex items-center text-sm">
+                                <CheckCircleIcon className="mr-2 h-4 w-4 text-blue-500" />
+                                <span>{benefit}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-base sm:text-lg mb-2">Benefits of Avoiding Certain Foods:</h3>
-                        <ul className="space-y-2">
-                          {avoidingBenefits.map((benefit, index) => (
-                            <li key={index} className="flex items-center text-sm sm:text-base">
-                              <CheckCircleIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
-                              <span>{benefit}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </ScrollArea>
-                </TabsContent>
+                    </ScrollArea>
+                  </TabsContent>
+                </div>
               </Tabs>
             </CardContent>
           </Card>
