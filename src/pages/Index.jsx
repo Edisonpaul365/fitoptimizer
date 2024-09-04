@@ -30,7 +30,57 @@ const Index = () => {
   };
 
   const generateRecommendation = () => {
-    // ... (keep the existing generateRecommendation function as is)
+    // Basic validation
+    if (!formData.age || !formData.weight || !formData.height || !formData.goal || !formData.activityLevel) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    // Calculate BMI
+    const heightInMeters = formData.height / 100;
+    const bmi = formData.weight / (heightInMeters * heightInMeters);
+
+    // Generate recommendation based on input
+    let recommendation = `Based on your information (Age: ${formData.age}, Weight: ${formData.weight}kg, Height: ${formData.height}cm, BMI: ${bmi.toFixed(1)}), here's your personalized plan:\n\n`;
+
+    if (formData.goal === "weight-loss") {
+      recommendation += "For weight loss:\n";
+      recommendation += "- Aim for a calorie deficit of 500 calories per day\n";
+      recommendation += "- Focus on high-protein, low-calorie foods\n";
+      recommendation += "- Incorporate 30-45 minutes of cardio 5 times a week\n";
+      setFoodSuggestions(["Lean meats", "Fish", "Vegetables", "Whole grains", "Fruits"]);
+      setFoodsToAvoid(["Sugary drinks", "Processed foods", "High-fat snacks"]);
+    } else if (formData.goal === "muscle-gain") {
+      recommendation += "For muscle gain:\n";
+      recommendation += "- Increase your calorie intake by 300-500 calories per day\n";
+      recommendation += "- Focus on high-protein foods and complex carbohydrates\n";
+      recommendation += "- Incorporate strength training 3-4 times a week\n";
+      setFoodSuggestions(["Chicken breast", "Eggs", "Greek yogurt", "Quinoa", "Sweet potatoes"]);
+      setFoodsToAvoid(["Excessive sugar", "Alcohol", "Fried foods"]);
+    } else {
+      recommendation += "For general fitness:\n";
+      recommendation += "- Maintain a balanced diet with a mix of nutrients\n";
+      recommendation += "- Aim for 150 minutes of moderate exercise per week\n";
+      recommendation += "- Include both cardio and strength training in your routine\n";
+      setFoodSuggestions(["Mixed vegetables", "Lean proteins", "Whole grains", "Nuts", "Seeds"]);
+      setFoodsToAvoid(["Excessive processed foods", "High-sugar snacks"]);
+    }
+
+    recommendation += `\nBased on your activity level (${formData.activityLevel}), adjust your calorie intake and exercise intensity accordingly.`;
+
+    setRecommendation(recommendation);
+    setEatingBenefits([
+      "Improved energy levels",
+      "Better nutrient absorption",
+      "Enhanced muscle recovery",
+      "Supports your fitness goals"
+    ]);
+    setAvoidingBenefits([
+      "Reduced risk of weight gain",
+      "Improved overall health",
+      "Better blood sugar control",
+      "Enhanced fitness progress"
+    ]);
   };
 
   return (
