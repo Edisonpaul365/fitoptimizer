@@ -15,7 +15,7 @@ const Index = () => {
     goal: '',
     activityLevel: '',
   });
-  const [recommendation, setRecommendation] = useState('');
+  const [recommendation, setRecommendation] = useState([]);
   const [foodSuggestions, setFoodSuggestions] = useState([]);
   const [foodsToAvoid, setFoodsToAvoid] = useState([]);
   const [eatingBenefits, setEatingBenefits] = useState([]);
@@ -38,7 +38,7 @@ const Index = () => {
     const heightInMeters = formData.height / 100;
     const bmi = formData.weight / (heightInMeters * heightInMeters);
 
-    let recommendation = [
+    let newRecommendation = [
       {
         title: "Your Profile",
         content: `Age: ${formData.age} years\nWeight: ${formData.weight} kg\nHeight: ${formData.height} cm\nBMI: ${bmi.toFixed(1)}`,
@@ -47,7 +47,7 @@ const Index = () => {
     ];
 
     if (formData.goal === "weight-loss") {
-      recommendation.push(
+      newRecommendation.push(
         {
           title: "Calorie Goal",
           content: "Aim for a calorie deficit of 500 calories per day",
@@ -67,7 +67,7 @@ const Index = () => {
       setFoodSuggestions(["Lean meats", "Fish", "Vegetables", "Whole grains", "Fruits"]);
       setFoodsToAvoid(["Sugary drinks", "Processed foods", "High-fat snacks"]);
     } else if (formData.goal === "muscle-gain") {
-      recommendation.push(
+      newRecommendation.push(
         {
           title: "Calorie Goal",
           content: "Increase your calorie intake by 300-500 calories per day",
@@ -87,7 +87,7 @@ const Index = () => {
       setFoodSuggestions(["Chicken breast", "Eggs", "Greek yogurt", "Quinoa", "Sweet potatoes"]);
       setFoodsToAvoid(["Excessive sugar", "Alcohol", "Fried foods"]);
     } else {
-      recommendation.push(
+      newRecommendation.push(
         {
           title: "Nutrition Goal",
           content: "Maintain a balanced diet with a mix of nutrients",
@@ -108,13 +108,13 @@ const Index = () => {
       setFoodsToAvoid(["Excessive processed foods", "High-sugar snacks"]);
     }
 
-    recommendation.push({
+    newRecommendation.push({
       title: "Activity Level Adjustment",
       content: `Based on your ${formData.activityLevel} activity level, adjust your calorie intake and exercise intensity accordingly.`,
       icon: <ActivityIcon className="h-6 w-6 text-blue-500" />
     });
 
-    setRecommendation(recommendation);
+    setRecommendation(newRecommendation);
     setEatingBenefits([
       "Improved energy levels",
       "Better nutrient absorption",
@@ -188,7 +188,7 @@ const Index = () => {
           </CardContent>
         </Card>
         
-        {recommendation && (
+        {recommendation.length > 0 && (
           <Card className="mt-6 sm:mt-8 shadow-lg">
             <CardHeader>
               <CardTitle className="text-xl sm:text-2xl text-center">Your Personalized Fitness Plan</CardTitle>
