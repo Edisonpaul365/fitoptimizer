@@ -1,0 +1,6 @@
+{
+  "appId": "com.fitoptimizer.app",
+  "appName": "FitOptimizer",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
